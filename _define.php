@@ -15,14 +15,17 @@ if (!defined('DC_RC_PATH')) {
 }
 
 $this->registerModule(
-    'antiflood',                // Name
-    'Anti flood spam filter',   // Description
-    'dcTeam',                   // Author
-    '0.6',
+    'antiflood',
+    'Anti flood spam filter',
+    'dcTeam',
+    '0.7',
     [
-        'requires'    => [['core', '2.24']],                                     // Dependencies
-        'permissions' => 'usage,contentadmin',
-        'priority'    => 200,
-        'type'        => 'plugin',
+        'requires'    => [['core', '2.24']],
+        'permissions' => dcCore::app()->auth->makePermissions([
+            dcAuth::PERMISSION_USAGE,
+            dcAuth::PERMISSION_CONTENT_ADMIN,
+        ]),
+        'priority' => 200,
+        'type'     => 'plugin',
     ]
 );

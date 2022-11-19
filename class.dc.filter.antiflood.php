@@ -10,10 +10,6 @@
  * @copyright Olivier Meunier and contributors
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-if (!defined('DC_RC_PATH')) {
-    return;
-}
-
 class dcFilterAntiFlood extends dcSpamFilter
 {
     public $name    = 'Anti Flood';
@@ -29,7 +25,7 @@ class dcFilterAntiFlood extends dcSpamFilter
         parent::__construct();
 
         $this->con   = dcCore::app()->con;
-        $this->table = dcCore::app()->prefix . 'spamrule';
+        $this->table = dcCore::app()->prefix . dcAntispam::SPAMRULE_TABLE_NAME;
 
         dcCore::app()->blog->settings->addNameSpace('antiflood');
         $this->delay      = dcCore::app()->blog->settings->antiflood->flood_delay;
@@ -84,7 +80,7 @@ class dcFilterAntiFlood extends dcSpamFilter
         "AND (blog_id = '" . dcCore::app()->blog->id . "' OR blog_id IS NULL) " .
         'ORDER BY rule_content ASC ';
 
-        $rs = $this->con->select($strReq);
+        $rs = new dcRecord($this->con->select($strReq));
         while ($rs->fetch()) {
             [$ip, $time] = explode(':', $rs->rule_content);
             if (($cip == $ip) && (time() - (int) $time <= $this->delay)) {
@@ -96,7 +92,7 @@ class dcFilterAntiFlood extends dcSpamFilter
 
         $cur = $this->con->openCursor($this->table);
 
-        $id = $this->con->select('SELECT MAX(rule_id) FROM ' . $this->table)->f(0) + 1;
+        $id = (new dcRecord($this->con->select('SELECT MAX(rule_id) FROM ' . $this->table)))->f(0) + 1;
 
         $cur->rule_id      = $id;
         $cur->rule_type    = 'flood';
@@ -118,7 +114,7 @@ class dcFilterAntiFlood extends dcSpamFilter
         "AND (blog_id = '" . dcCore::app()->blog->id . "' OR blog_id IS NULL) " .
         'ORDER BY rule_content ASC ';
 
-        $rs = $this->con->select($strReq);
+        $rs = new dcRecord($this->con->select($strReq));
         while ($rs->fetch()) {
             [$ip, $time] = explode(':', $rs->rule_content);
             if (time() - (int) $time > $this->delay) {
@@ -151,7 +147,7 @@ class dcFilterAntiFlood extends dcSpamFilter
         $this->con->execute($strReq);
     }
 
-    public function gui($url)
+    public function gui(string $url): string
     {
         dcCore::app()->blog->settings->addNameSpace('antiflood');
 

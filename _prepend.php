@@ -14,5 +14,5 @@ if (!defined('DC_RC_PATH')) {
     return;
 }
 
-$__autoload['dcFilterAntiFlood'] = __DIR__ . '/class.dc.filter.antiflood.php';
-dcCore::app()->spamfilters[]     = 'dcFilterAntiFlood';
+Clearbricks::lib()->autoload(['dcFilterAntiFlood' => __DIR__ . '/class.dc.filter.antiflood.php']);
+dcCore::app()->spamfilters[] = 'dcFilterAntiFlood';
