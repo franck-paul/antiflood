@@ -10,7 +10,12 @@
  * @copyright Olivier Meunier and contributors
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-class dcFilterAntiFlood extends dcSpamFilter
+
+use Dotclear\Helper\Html\Html;
+use Dotclear\Helper\Network\Http;
+use Dotclear\Plugin\antispam\SpamFilter;
+
+class dcFilterAntiFlood extends SpamFilter
 {
     public $name    = 'Anti Flood';
     public $has_gui = true;
@@ -18,16 +23,15 @@ class dcFilterAntiFlood extends dcSpamFilter
     public $send_error;
 
     private $con;
-    private $table;
+    private string $table;
 
     public function __construct()
     {
         parent::__construct();
 
         $this->con   = dcCore::app()->con;
-        $this->table = dcCore::app()->prefix . dcAntispam::SPAMRULE_TABLE_NAME;
+        $this->table = dcCore::app()->prefix . initAntispam::SPAMRULE_TABLE_NAME;
 
-        dcCore::app()->blog->settings->addNameSpace('antiflood');
         $this->delay      = dcCore::app()->blog->settings->antiflood->flood_delay;
         $this->send_error = dcCore::app()->blog->settings->antiflood->send_error;
 
@@ -50,7 +54,7 @@ class dcFilterAntiFlood extends dcSpamFilter
     {
         if ($this->checkIp($ip)) {
             if ($this->send_error) {
-                http::head(503, 'Service Unavailable');
+                Http::head(503, 'Service Unavailable');
                 echo '<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">' .
                     '<HTML><HEAD>' .
                     '<TITLE>503 ' . __('Service Temporarily Unavailable') . '</TITLE>' .
@@ -149,8 +153,6 @@ class dcFilterAntiFlood extends dcSpamFilter
 
     public function gui(string $url): string
     {
-        dcCore::app()->blog->settings->addNameSpace('antiflood');
-
         $flood_delay = dcCore::app()->blog->settings->antiflood->flood_delay;
         $send_error  = dcCore::app()->blog->settings->antiflood->send_error;
 
@@ -162,13 +164,13 @@ class dcFilterAntiFlood extends dcSpamFilter
                 dcCore::app()->blog->settings->antiflood->put('flood_delay', $flood_delay, 'string');
                 dcCore::app()->blog->settings->antiflood->put('send_error', $send_error, 'boolean');
 
-                http::redirect($url . '&up=1');
+                Http::redirect($url . '&up=1');
             } catch (Exception $e) {
                 dcCore::app()->error->add($e->getMessage());
             }
         }
 
-        return '<form action="' . html::escapeURL($url) . '" method="post">' .
+        return '<form action="' . Html::escapeURL($url) . '" method="post">' .
 
             '<p><label class="classic">' . __('Delay:') . ' ' .
             form::field('flood_delay', 12, 128, $flood_delay) . '</label></p>' .
