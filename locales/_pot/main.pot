@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dotclear 2 antiflood module\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-16 12:30+0200\n"
+"POT-Creation-Date: 2023-05-16 13:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,35 +16,35 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../git-plugins/antiflood/src/AntispamFilterAntiflood.php:60
+#: ../git-plugins/antiflood/src/AntispamFilterAntiflood.php:68
 msgid "Anti flood"
 msgstr ""
 
-#: ../git-plugins/antiflood/src/AntispamFilterAntiflood.php:70
-#: ../git-plugins/antiflood/src/AntispamFilterAntiflood.php:72
+#: ../git-plugins/antiflood/src/AntispamFilterAntiflood.php:78
+#: ../git-plugins/antiflood/src/AntispamFilterAntiflood.php:80
 msgid "Service Temporarily Unavailable"
 msgstr ""
 
-#: ../git-plugins/antiflood/src/AntispamFilterAntiflood.php:73
+#: ../git-plugins/antiflood/src/AntispamFilterAntiflood.php:81
 msgid "The server is temporarily unable to service your request due to maintenance downtime or capacity problems. Please try again later."
 msgstr ""
 
-#: ../git-plugins/antiflood/src/AntispamFilterAntiflood.php:186
+#: ../git-plugins/antiflood/src/AntispamFilterAntiflood.php:222
 msgid "Delay:"
 msgstr ""
 
-#: ../git-plugins/antiflood/src/AntispamFilterAntiflood.php:189
+#: ../git-plugins/antiflood/src/AntispamFilterAntiflood.php:225
 msgid "Sets the delay in seconds beetween two comments from the same IP"
 msgstr ""
 
-#: ../git-plugins/antiflood/src/AntispamFilterAntiflood.php:190
+#: ../git-plugins/antiflood/src/AntispamFilterAntiflood.php:230
 msgid "Send error code:"
 msgstr ""
 
-#: ../git-plugins/antiflood/src/AntispamFilterAntiflood.php:193
+#: ../git-plugins/antiflood/src/AntispamFilterAntiflood.php:233
 msgid "Sets whether the filter should reply with a 503 error code."
 msgstr ""
 
-#: ../git-plugins/antiflood/src/AntispamFilterAntiflood.php:194
-msgid "save"
+#: ../git-plugins/antiflood/src/AntispamFilterAntiflood.php:236
+msgid "Save"
 msgstr ""

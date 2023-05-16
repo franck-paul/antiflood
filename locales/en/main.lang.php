@@ -18,4 +18,4 @@ L10n::$locales['Delay:'] = '';
 L10n::$locales['Sets the delay in seconds beetween two comments from the same IP'] = '';
 L10n::$locales['Send error code:'] = '';
 L10n::$locales['Sets whether the filter should reply with a 503 error code.'] = '';
-L10n::$locales['save'] = '';
+L10n::$locales['Save'] = '';
