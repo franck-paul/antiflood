@@ -32,7 +32,7 @@ class Prepend extends dcNsProcess
             return false;
         }
 
-        dcCore::app()->spamfilters[] = AntispamFilterAntiFlood::class;
+        dcCore::app()->spamfilters[] = AntispamFilterAntiflood::class;
 
         return true;
     }
