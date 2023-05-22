@@ -33,14 +33,21 @@ use initAntispam;
 
 class AntispamFilterAntiflood extends SpamFilter
 {
-    public $name    = 'Anti Flood';
+    /** @var string Filter name */
+    public $name = 'Anti Flood';
+
+    /** @var bool Filter has settings GUI? */
     public $has_gui = true;
+
     public $delay;
     public $send_error;
 
     private $con;
     private string $table;
 
+    /**
+     * Constructs a new instance.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -63,12 +70,32 @@ class AntispamFilterAntiflood extends SpamFilter
         }
     }
 
+    /**
+     * Sets the filter description.
+     */
     protected function setInfo()
     {
         $this->description = __('Anti flood');
     }
 
-    public function isSpam($type, $author, $email, $site, $ip, $content, $post_id, &$status)
+    /**
+     * This method should return if a comment is a spam or not. If it returns true
+     * or false, execution of next filters will be stoped. If should return nothing
+     * to let next filters apply.
+     *
+     * Your filter should also fill $status variable with its own information if
+     * comment is a spam.
+     *
+     * @param      string  $type     The comment type (comment / trackback)
+     * @param      string  $author   The comment author
+     * @param      string  $email    The comment author email
+     * @param      string  $site     The comment author site
+     * @param      string  $ip       The comment author IP
+     * @param      string  $content  The comment content
+     * @param      int     $post_id  The comment post_id
+     * @param      string  $status   The comment status
+     */
+    public function isSpam(string $type, ?string $author, ?string $email, ?string $site, ?string $ip, ?string $content, ?int $post_id, string &$status)
     {
         if ($this->checkIp($ip)) {
             if ($this->send_error) {
@@ -89,7 +116,17 @@ class AntispamFilterAntiflood extends SpamFilter
         return(null);
     }
 
-    public function getStatusMessage($status, $comment_id)
+    /**
+     * This method returns filter status message. You can overload this method to
+     * return a custom message. Message is shown in comment details and in
+     * comments list.
+     *
+     * @param      string  $status      The status
+     * @param      int     $comment_id  The comment identifier
+     *
+     * @return     string  The status message.
+     */
+    public function getStatusMessage(string $status, ?int $comment_id)
     {
         return sprintf(__('Filtered by %s.'), $this->guiLink());
     }
@@ -191,6 +228,14 @@ class AntispamFilterAntiflood extends SpamFilter
         $sql->delete();
     }
 
+    /**
+     * This method is called when you enter filter configuration. Your class should
+     * have $has_gui property set to "true" to enable GUI.
+     *
+     * @param      string  $url    The GUI url
+     *
+     * @return     string  The GUI HTML content
+     */
     public function gui(string $url): string
     {
         $settings    = dcCore::app()->blog->settings->get(My::id());
