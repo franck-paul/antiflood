@@ -17,6 +17,6 @@ L10n::$locales['The server is temporarily unable to service your request due to 
 Essayez à nouveau dans un moment.';
 L10n::$locales['Delay:'] = 'Délai :';
 L10n::$locales['Sets the delay in seconds beetween two comments from the same IP'] = 'Indiquez le délai en secondes entre deux commentaires pour une même adresse IP';
-L10n::$locales['Send error code:'] = 'Envoyer le code d\'erreur :';
+L10n::$locales['Send error code'] = 'Envoyer le code d\'erreur';
 L10n::$locales['Sets whether the filter should reply with a 503 error code.'] = 'Indique si le filtre doit répondre avec un code d\'erreur 503';
 L10n::$locales['Save'] = 'Enregistrer';

@@ -272,7 +272,7 @@ class AntispamFilterAntiflood extends SpamFilter
             (new Para())->items([
                 (new Checkbox('send_error', $send_error))
                     ->value(1)
-                    ->label((new Label(__('Send error code:'), Label::INSIDE_TEXT_AFTER))),
+                    ->label((new Label(__('Send error code'), Label::INSIDE_TEXT_AFTER))),
             ]),
             (new Para())->class('form-note')->items([
                 (new Text(null, __('Sets whether the filter should reply with a 503 error code.'))),
