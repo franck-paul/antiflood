@@ -14,7 +14,7 @@ $this->registerModule(
     'antiflood',
     'Anti flood spam filter',
     'dcTeam',
-    '2.1.1',
+    '2.1.2',
     [
         'requires'    => [['core', '2.26']],
         'permissions' => dcCore::app()->auth->makePermissions([
