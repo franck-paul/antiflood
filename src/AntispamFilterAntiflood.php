@@ -140,7 +140,7 @@ class AntispamFilterAntiflood extends SpamFilter
             ->from($this->table)
             ->where('rule_type = ' . $sql->quote('flood'))
             ->and($sql->orGroup([
-                'blog_id = ' . dcCore::app()->blog->id,
+                'blog_id = ' . $sql->quote(dcCore::app()->blog->id),
                 $sql->isNull('blog_id'),
             ]))
             ->order('rule_content ASC')
@@ -186,7 +186,7 @@ class AntispamFilterAntiflood extends SpamFilter
             ->from($this->table)
             ->where('rule_type = ' . $sql->quote('flood'))
             ->and($sql->orGroup([
-                'blog_id = ' . dcCore::app()->blog->id,
+                'blog_id = ' . $sql->quote(dcCore::app()->blog->id),
                 $sql->isNull('blog_id'),
             ]))
             ->order('rule_content ASC')
