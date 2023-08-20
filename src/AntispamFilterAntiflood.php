@@ -16,7 +16,7 @@ namespace Dotclear\Plugin\antiflood;
 
 use dcCore;
 use dcNamespace;
-use dcPage;
+use Dotclear\Core\Backend\Notices;
 use Dotclear\Database\Statement\DeleteStatement;
 use Dotclear\Database\Statement\SelectStatement;
 use Dotclear\Helper\Html\Form\Checkbox;
@@ -250,7 +250,7 @@ class AntispamFilterAntiflood extends SpamFilter
                 $settings->put('flood_delay', $flood_delay, dcNamespace::NS_INT);
                 $settings->put('send_error', $send_error, dcNamespace::NS_BOOL);
 
-                dcPage::addSuccessNotice(__('Filter configuration have been successfully saved.'));
+                Notices::addSuccessNotice(__('Filter configuration have been successfully saved.'));
                 Http::redirect($url);
             } catch (Exception $e) {
                 dcCore::app()->error->add($e->getMessage());
