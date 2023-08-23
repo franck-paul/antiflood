@@ -55,7 +55,7 @@ class AntispamFilterAntiflood extends SpamFilter
         $this->con   = dcCore::app()->con;
         $this->table = dcCore::app()->prefix . initAntispam::SPAMRULE_TABLE_NAME;
 
-        $settings = dcCore::app()->blog->settings->get(My::id());
+        $settings = My::settings();
 
         $this->delay      = $settings->flood_delay;
         $this->send_error = $settings->send_error;
@@ -238,7 +238,7 @@ class AntispamFilterAntiflood extends SpamFilter
      */
     public function gui(string $url): string
     {
-        $settings    = dcCore::app()->blog->settings->get(My::id());
+        $settings    = My::settings();
         $flood_delay = $settings->flood_delay;
         $send_error  = $settings->send_error;
 
@@ -280,7 +280,7 @@ class AntispamFilterAntiflood extends SpamFilter
             (new Para())->items([
                 (new Submit(['af_send'], __('Save')))
                     ->accesskey('s'),
-                dcCore::app()->formNonce(false),
+                ... My::hiddenFields(),
             ]),
         ])
         ->render();
