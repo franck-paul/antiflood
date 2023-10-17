@@ -14,7 +14,8 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\antiflood;
 
-use dcCore;
+use ArrayObject;
+use Dotclear\App;
 use Dotclear\Core\Process;
 
 class Prepend extends Process
@@ -30,7 +31,11 @@ class Prepend extends Process
             return false;
         }
 
-        dcCore::app()->spamfilters[] = AntispamFilterAntiflood::class;
+        App::behavior()->addBehaviors([
+            'AntispamInitFilters' => function (ArrayObject $spamfilters): void {
+                $spamfilters->append(AntispamFilterAntiflood::class);
+            },
+        ]);
 
         return true;
     }

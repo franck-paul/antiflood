@@ -27,6 +27,7 @@ use Dotclear\Helper\Html\Form\Para;
 use Dotclear\Helper\Html\Form\Submit;
 use Dotclear\Helper\Html\Form\Text;
 use Dotclear\Helper\Network\Http;
+use Dotclear\Interface\Core\ConnectionInterface;
 use Dotclear\Plugin\antispam\SpamFilter;
 use Exception;
 use initAntispam;
@@ -34,15 +35,15 @@ use initAntispam;
 class AntispamFilterAntiflood extends SpamFilter
 {
     /** @var string Filter name */
-    public $name = 'Anti Flood';
+    public string $name = 'Anti Flood';
 
     /** @var bool Filter has settings GUI? */
-    public $has_gui = true;
+    public bool $has_gui = true;
 
-    public $delay;
-    public $send_error;
+    public int $delay;
+    public bool $send_error;
 
-    private $con;
+    private ConnectionInterface $con;
     private string $table;
 
     /**
@@ -73,7 +74,7 @@ class AntispamFilterAntiflood extends SpamFilter
     /**
      * Sets the filter description.
      */
-    protected function setInfo()
+    protected function setInfo(): void
     {
         $this->description = __('Anti flood');
     }
@@ -110,10 +111,10 @@ class AntispamFilterAntiflood extends SpamFilter
                 exit;
             }
 
-            return(true);
+            return true;
         }
 
-        return(null);
+        return null;
     }
 
     /**
@@ -126,13 +127,17 @@ class AntispamFilterAntiflood extends SpamFilter
      *
      * @return     string  The status message.
      */
-    public function getStatusMessage(string $status, ?int $comment_id)
+    public function getStatusMessage(string $status, ?int $comment_id): string
     {
         return sprintf(__('Filtered by %s.'), $this->guiLink());
     }
 
-    private function checkIP($cip)
+    private function checkIP(?string $cip): bool
     {
+        if (is_null($cip)) {
+            return false;
+        }
+
         $sql = new SelectStatement();
         $sql
             ->field('rule_content')
@@ -176,7 +181,7 @@ class AntispamFilterAntiflood extends SpamFilter
         return false;
     }
 
-    private function cleanOldRecords()
+    private function cleanOldRecords(): void
     {
         $ids = [];
 
@@ -204,7 +209,12 @@ class AntispamFilterAntiflood extends SpamFilter
         }
     }
 
-    private function removeRule($ids)
+    /**
+     * Removes a rule.
+     *
+     * @param      array<int, string>|string  $ids    The identifiers
+     */
+    private function removeRule(string|array $ids): void
     {
         $sql = new DeleteStatement();
         $sql
