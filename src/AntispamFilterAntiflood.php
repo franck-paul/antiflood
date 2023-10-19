@@ -16,6 +16,7 @@ namespace Dotclear\Plugin\antiflood;
 
 use dcCore;
 use dcNamespace;
+use Dotclear\App;
 use Dotclear\Core\Backend\Notices;
 use Dotclear\Database\Statement\DeleteStatement;
 use Dotclear\Database\Statement\SelectStatement;
@@ -145,17 +146,19 @@ class AntispamFilterAntiflood extends SpamFilter
             ->from($this->table)
             ->where('rule_type = ' . $sql->quote('flood'))
             ->and($sql->orGroup([
-                'blog_id = ' . $sql->quote(dcCore::app()->blog->id),
+                'blog_id = ' . $sql->quote(App::blog()->id()),
                 $sql->isNull('blog_id'),
             ]))
             ->order('rule_content ASC')
         ;
 
         $rs = $sql->select();
-        while ($rs->fetch()) {
-            [$ip, $time] = explode(':', $rs->rule_content);
-            if (($cip == $ip) && (time() - (int) $time <= $this->delay)) {
-                return true;
+        if ($rs) {
+            while ($rs->fetch()) {
+                [$ip, $time] = explode(':', $rs->rule_content);
+                if (($cip == $ip) && (time() - (int) $time <= $this->delay)) {
+                    return true;
+                }
             }
         }
         unset($sql);
@@ -174,7 +177,7 @@ class AntispamFilterAntiflood extends SpamFilter
         $cur->rule_id      = $id;
         $cur->rule_type    = 'flood';
         $cur->rule_content = (string) implode(':', [$cip,time()]);
-        $cur->blog_id      = dcCore::app()->blog->id;
+        $cur->blog_id      = App::blog()->id();
 
         $cur->insert();
 
@@ -191,17 +194,19 @@ class AntispamFilterAntiflood extends SpamFilter
             ->from($this->table)
             ->where('rule_type = ' . $sql->quote('flood'))
             ->and($sql->orGroup([
-                'blog_id = ' . $sql->quote(dcCore::app()->blog->id),
+                'blog_id = ' . $sql->quote(App::blog()->id()),
                 $sql->isNull('blog_id'),
             ]))
             ->order('rule_content ASC')
         ;
 
         $rs = $sql->select();
-        while ($rs->fetch()) {
-            [$ip, $time] = explode(':', $rs->rule_content);
-            if (time() - (int) $time > $this->delay) {
-                array_push($ids, $rs->rule_id);
+        if ($rs) {
+            while ($rs->fetch()) {
+                [$ip, $time] = explode(':', $rs->rule_content);
+                if (time() - (int) $time > $this->delay) {
+                    array_push($ids, $rs->rule_id);
+                }
             }
         }
         if (count($ids) > 0) {
@@ -232,7 +237,7 @@ class AntispamFilterAntiflood extends SpamFilter
         }
 
         if (!dcCore::app()->auth->isSuperAdmin()) {
-            $sql->and('blog_id = ' . $sql->quote(dcCore::app()->blog->id));
+            $sql->and('blog_id = ' . $sql->quote(App::blog()->id()));
         }
 
         $sql->delete();
