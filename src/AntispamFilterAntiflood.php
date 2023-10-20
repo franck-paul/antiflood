@@ -14,8 +14,6 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\antiflood;
 
-use dcCore;
-use dcNamespace;
 use Dotclear\App;
 use Dotclear\Core\Backend\Notices;
 use Dotclear\Database\Statement\DeleteStatement;
@@ -29,9 +27,9 @@ use Dotclear\Helper\Html\Form\Submit;
 use Dotclear\Helper\Html\Form\Text;
 use Dotclear\Helper\Network\Http;
 use Dotclear\Interface\Core\ConnectionInterface;
+use Dotclear\Plugin\antispam\Antispam;
 use Dotclear\Plugin\antispam\SpamFilter;
 use Exception;
-use initAntispam;
 
 class AntispamFilterAntiflood extends SpamFilter
 {
@@ -54,8 +52,8 @@ class AntispamFilterAntiflood extends SpamFilter
     {
         parent::__construct();
 
-        $this->con   = dcCore::app()->con;
-        $this->table = dcCore::app()->prefix . initAntispam::SPAMRULE_TABLE_NAME;
+        $this->con   = App::con();
+        $this->table = App::con()->prefix() . Antispam::SPAMRULE_TABLE_NAME;
 
         $settings = My::settings();
 
@@ -63,11 +61,11 @@ class AntispamFilterAntiflood extends SpamFilter
         $this->send_error = $settings->send_error;
 
         if ($this->delay === null) {
-            $settings->put('flood_delay', 60, dcNamespace::NS_INT, 'Delay in seconds beetween two comments from the same IP');
+            $settings->put('flood_delay', 60, App::blogWorkspace()::NS_INT, 'Delay in seconds beetween two comments from the same IP');
             $this->delay = 60;
         }
         if ($this->send_error === null) {
-            $settings->put('send_error', false, dcNamespace::NS_BOOL, 'Whether the filter should reply with a 503 error code');
+            $settings->put('send_error', false, App::blogWorkspace()::NS_BOOL, 'Whether the filter should reply with a 503 error code');
             $this->send_error = false;
         }
     }
@@ -236,7 +234,7 @@ class AntispamFilterAntiflood extends SpamFilter
             $sql->where('rule_id = ' . $ids);
         }
 
-        if (!dcCore::app()->auth->isSuperAdmin()) {
+        if (!App::auth()->isSuperAdmin()) {
             $sql->and('blog_id = ' . $sql->quote(App::blog()->id()));
         }
 
@@ -262,13 +260,13 @@ class AntispamFilterAntiflood extends SpamFilter
                 $flood_delay = (int) $_POST['flood_delay'];
                 $send_error  = isset($_POST['send_error']);
 
-                $settings->put('flood_delay', $flood_delay, dcNamespace::NS_INT);
-                $settings->put('send_error', $send_error, dcNamespace::NS_BOOL);
+                $settings->put('flood_delay', $flood_delay, App::blogWorkspace()::NS_INT);
+                $settings->put('send_error', $send_error, App::blogWorkspace()::NS_BOOL);
 
                 Notices::addSuccessNotice(__('Filter configuration have been successfully saved.'));
                 Http::redirect($url);
             } catch (Exception $e) {
-                dcCore::app()->error->add($e->getMessage());
+                App::error()->add($e->getMessage());
             }
         }
 
