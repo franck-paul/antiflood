@@ -14,7 +14,7 @@ $this->registerModule(
     'antiflood',
     'Anti flood spam filter',
     'dcTeam',
-    '3.0',
+    '4.0',
     [
         'requires'    => [['core', '2.28']],
         'permissions' => 'My',
