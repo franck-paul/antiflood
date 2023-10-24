@@ -57,16 +57,17 @@ class AntispamFilterAntiflood extends SpamFilter
 
         $settings = My::settings();
 
-        $this->delay      = $settings->flood_delay;
-        $this->send_error = $settings->send_error;
-
-        if ($this->delay === null) {
+        if (!$settings->settingExists('flood_delay')) {
             $settings->put('flood_delay', 60, App::blogWorkspace()::NS_INT, 'Delay in seconds beetween two comments from the same IP');
             $this->delay = 60;
+        } else {
+            $this->delay = min((int) $settings->flood_delay, 2);    // 2 seconds min if setting is zero
         }
-        if ($this->send_error === null) {
+        if (!$settings->settingExists('send_error')) {
             $settings->put('send_error', false, App::blogWorkspace()::NS_BOOL, 'Whether the filter should reply with a 503 error code');
             $this->send_error = false;
+        } else {
+            $this->send_error = (bool) $settings->send_error;
         }
     }
 
@@ -268,6 +269,8 @@ class AntispamFilterAntiflood extends SpamFilter
             } catch (Exception $e) {
                 App::error()->add($e->getMessage());
             }
+
+            return '';
         }
 
         return
