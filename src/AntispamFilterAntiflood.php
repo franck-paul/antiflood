@@ -296,7 +296,7 @@ class AntispamFilterAntiflood extends SpamFilter
             (new Para())->items([
                 (new Submit(['af_send'], __('Save')))
                     ->accesskey('s'),
-                ... My::hiddenFields(),
+                App::nonce()->formNonce(),
             ]),
         ])
         ->render();
