@@ -40,9 +40,11 @@ class AntispamFilterAntiflood extends SpamFilter
     public bool $has_gui = true;
 
     public int $delay;
+
     public bool $send_error;
 
     private ConnectionInterface $con;
+
     private string $table;
 
     /**
@@ -63,6 +65,7 @@ class AntispamFilterAntiflood extends SpamFilter
         } else {
             $this->delay = min((int) $settings->flood_delay, 2);    // 2 seconds min if setting is zero
         }
+
         if (!$settings->settingExists('send_error')) {
             $settings->put('send_error', false, App::blogWorkspace()::NS_BOOL, 'Whether the filter should reply with a 503 error code');
             $this->send_error = false;
@@ -101,9 +104,7 @@ class AntispamFilterAntiflood extends SpamFilter
         if ($this->checkIp($ip)) {
             if ($this->send_error) {
                 Http::head(503, 'Service Unavailable');
-                echo '<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">' .
-                    '<HTML><HEAD>' .
-                    '<TITLE>503 ' . __('Service Temporarily Unavailable') . '</TITLE>' .
+                echo '<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN"><HTML><HEAD><TITLE>503 ' . __('Service Temporarily Unavailable') . '</TITLE>' .
                     '</HEAD><BODY>' .
                     '<H1>' . __('Service Temporarily Unavailable') . '</H1>' .
                     __('The server is temporarily unable to service your request due to maintenance downtime or capacity problems. Please try again later.') .
@@ -155,11 +156,12 @@ class AntispamFilterAntiflood extends SpamFilter
         if ($rs) {
             while ($rs->fetch()) {
                 [$ip, $time] = explode(':', $rs->rule_content);
-                if (($cip == $ip) && (time() - (int) $time <= $this->delay)) {
+                if (($cip === $ip) && (time() - (int) $time <= $this->delay)) {
                     return true;
                 }
             }
         }
+
         unset($sql);
 
         $this->cleanOldRecords();
@@ -204,11 +206,12 @@ class AntispamFilterAntiflood extends SpamFilter
             while ($rs->fetch()) {
                 [$ip, $time] = explode(':', $rs->rule_content);
                 if (time() - (int) $time > $this->delay) {
-                    array_push($ids, $rs->rule_id);
+                    $ids[] = $rs->rule_id;
                 }
             }
         }
-        if (count($ids) > 0) {
+
+        if ($ids !== []) {
             $this->removeRule($ids);
         }
     }
@@ -229,6 +232,7 @@ class AntispamFilterAntiflood extends SpamFilter
             foreach ($ids as &$v) {
                 $v = (int) $v;
             }
+
             $sql->where('rule_id' . $sql->in($ids, 'int'));
         } else {
             $ids = (int) $ids;
