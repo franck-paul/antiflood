@@ -20,5 +20,9 @@ $this->registerModule(
         'permissions' => 'My',
         'priority'    => 200,
         'type'        => 'plugin',
+
+        'details'    => 'https://open-time.net/?q=antiflood',
+        'support'    => 'https://github.com/franck-paul/antiflood',
+        'repository' => 'https://raw.githubusercontent.com/franck-paul/antiflood/master/dcstore.xml',
     ]
 );
