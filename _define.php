@@ -11,10 +11,10 @@
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
 $this->registerModule(
-    'antiflood',
+    'Anti flood',
     'Anti flood spam filter',
     'dcTeam',
-    '4.2',
+    '4.3',
     [
         'requires'    => [['core', '2.28']],
         'permissions' => 'My',
