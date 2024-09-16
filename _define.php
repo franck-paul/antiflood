@@ -23,6 +23,6 @@ $this->registerModule(
 
         'details'    => 'https://open-time.net/?q=antiflood',
         'support'    => 'https://github.com/franck-paul/antiflood',
-        'repository' => 'https://raw.githubusercontent.com/franck-paul/antiflood/master/dcstore.xml',
+        'repository' => 'https://raw.githubusercontent.com/franck-paul/antiflood/main/dcstore.xml',
     ]
 );
