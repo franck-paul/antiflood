@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @brief antiflood, a plugin for Dotclear 2
  *
@@ -43,9 +44,9 @@ class AntispamFilterAntiflood extends SpamFilter
 
     public bool $send_error;
 
-    private ConnectionInterface $con;
+    private readonly ConnectionInterface $con;
 
-    private string $table;
+    private readonly string $table;
 
     /**
      * Constructs a new instance.
