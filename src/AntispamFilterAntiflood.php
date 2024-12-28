@@ -100,7 +100,7 @@ class AntispamFilterAntiflood extends SpamFilter
      * @param      int     $post_id  The comment post_id
      * @param      string  $status   The comment status
      */
-    public function isSpam(string $type, ?string $author, ?string $email, ?string $site, ?string $ip, ?string $content, ?int $post_id, string &$status)
+    public function isSpam(string $type, ?string $author, ?string $email, ?string $site, ?string $ip, ?string $content, ?int $post_id, string &$status): ?bool
     {
         if ($this->checkIp($ip)) {
             if ($this->send_error) {
@@ -178,7 +178,7 @@ class AntispamFilterAntiflood extends SpamFilter
         $cur               = $this->con->openCursor($this->table);
         $cur->rule_id      = $id;
         $cur->rule_type    = 'flood';
-        $cur->rule_content = (string) implode(':', [$cip,time()]);
+        $cur->rule_content = implode(':', [$cip,time()]);
         $cur->blog_id      = App::blog()->id();
 
         $cur->insert();
