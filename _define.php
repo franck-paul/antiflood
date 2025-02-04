@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @brief Antiflood, an antispam filter plugin for Dotclear 2
  *
@@ -16,6 +17,7 @@ $this->registerModule(
     'dcTeam',
     '4.4',
     [
+        'date'        => '2003-08-13T13:42:00+0100',
         'requires'    => [['core', '2.28']],
         'permissions' => 'My',
         'priority'    => 200,
