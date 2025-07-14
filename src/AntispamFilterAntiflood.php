@@ -102,7 +102,7 @@ class AntispamFilterAntiflood extends SpamFilter
      */
     public function isSpam(string $type, ?string $author, ?string $email, ?string $site, ?string $ip, ?string $content, ?int $post_id, string &$status): ?bool
     {
-        if ($this->checkIp($ip)) {
+        if ($this->checkIP($ip)) {
             if ($this->send_error) {
                 Http::head(503, 'Service Unavailable');
                 echo '<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN"><HTML><HEAD><TITLE>503 ' . __('Service Temporarily Unavailable') . '</TITLE>' .
