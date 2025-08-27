@@ -27,7 +27,6 @@ use Dotclear\Helper\Html\Form\Para;
 use Dotclear\Helper\Html\Form\Submit;
 use Dotclear\Helper\Html\Form\Text;
 use Dotclear\Helper\Network\Http;
-use Dotclear\Interface\Core\ConnectionInterface;
 use Dotclear\Plugin\antispam\Antispam;
 use Dotclear\Plugin\antispam\SpamFilter;
 use Exception;
@@ -44,8 +43,6 @@ class AntispamFilterAntiflood extends SpamFilter
 
     public bool $send_error;
 
-    private readonly ConnectionInterface $con;
-
     private readonly string $table;
 
     /**
@@ -55,7 +52,6 @@ class AntispamFilterAntiflood extends SpamFilter
     {
         parent::__construct();
 
-        $this->con   = App::con();
         $this->table = App::con()->prefix() . Antispam::SPAMRULE_TABLE_NAME;
 
         $settings = My::settings();
@@ -175,7 +171,7 @@ class AntispamFilterAntiflood extends SpamFilter
         $rs = $sql->select();
         $id = $rs ? $rs->f(0) + 1 : 1;
 
-        $cur               = $this->con->openCursor($this->table);
+        $cur               = App::con()->openCursor($this->table);
         $cur->rule_id      = $id;
         $cur->rule_type    = 'flood';
         $cur->rule_content = implode(':', [$cip,time()]);
