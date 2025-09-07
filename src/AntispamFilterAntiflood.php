@@ -52,7 +52,7 @@ class AntispamFilterAntiflood extends SpamFilter
     {
         parent::__construct();
 
-        $this->table = App::con()->prefix() . Antispam::SPAMRULE_TABLE_NAME;
+        $this->table = App::db()->con()->prefix() . Antispam::SPAMRULE_TABLE_NAME;
 
         $settings = My::settings();
 
@@ -171,7 +171,7 @@ class AntispamFilterAntiflood extends SpamFilter
         $rs = $sql->select();
         $id = $rs ? $rs->f(0) + 1 : 1;
 
-        $cur               = App::con()->openCursor($this->table);
+        $cur               = App::db()->con()->openCursor($this->table);
         $cur->rule_id      = $id;
         $cur->rule_type    = 'flood';
         $cur->rule_content = implode(':', [$cip,time()]);
