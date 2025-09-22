@@ -16,7 +16,6 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\antiflood;
 
 use Dotclear\App;
-use Dotclear\Core\Backend\Notices;
 use Dotclear\Database\Statement\DeleteStatement;
 use Dotclear\Database\Statement\SelectStatement;
 use Dotclear\Helper\Html\Form\Checkbox;
@@ -265,7 +264,7 @@ class AntispamFilterAntiflood extends SpamFilter
                 $settings->put('flood_delay', $flood_delay, App::blogWorkspace()::NS_INT);
                 $settings->put('send_error', $send_error, App::blogWorkspace()::NS_BOOL);
 
-                Notices::addSuccessNotice(__('Filter configuration have been successfully saved.'));
+                App::backend()->notices()->addSuccessNotice(__('Filter configuration have been successfully saved.'));
                 Http::redirect($url);
             } catch (Exception $e) {
                 App::error()->add($e->getMessage());
