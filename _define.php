@@ -15,9 +15,9 @@ $this->registerModule(
     'Anti flood',
     'Anti flood spam filter',
     'dcTeam',
-    '5.1',
+    '5.2',
     [
-        'date'        => '2025-09-22T10:37:06+0200',
+        'date'        => '2026-04-14T15:55:32+0200',
         'requires'    => [['core', '2.36']],
         'permissions' => 'My',
         'priority'    => 200,
