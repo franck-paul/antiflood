@@ -8,7 +8,7 @@
  *
  * @author Franck Paul and contributors
  *
- * @copyright Franck Paul carnet.franck.paul@gmail.com
+ * @copyright Franck Paul contact@open-time.net
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
 declare(strict_types=1);
@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\antiflood;
 
 use Dotclear\App;
+use Dotclear\Database\MetaRecord;
 use Dotclear\Database\Statement\DeleteStatement;
 use Dotclear\Database\Statement\SelectStatement;
 use Dotclear\Helper\Html\Form\Checkbox;
@@ -55,12 +56,12 @@ class AntispamFilterAntiflood extends SpamFilter
 
         $settings = My::settings();
 
+        $delay = is_numeric($delay = $settings->flood_delay) ? min((int) $delay, 2) : 60;
+
         if (!$settings->settingExists('flood_delay')) {
             $settings->put('flood_delay', 60, App::blogWorkspace()::NS_INT, 'Delay in seconds beetween two comments from the same IP');
-            $this->delay = 60;
-        } else {
-            $this->delay = min((int) $settings->flood_delay, 2);    // 2 seconds min if setting is zero
         }
+        $this->delay = $delay;
 
         if (!$settings->settingExists('send_error')) {
             $settings->put('send_error', false, App::blogWorkspace()::NS_BOOL, 'Whether the filter should reply with a 503 error code');
@@ -151,7 +152,8 @@ class AntispamFilterAntiflood extends SpamFilter
         $rs = $sql->select();
         if ($rs) {
             while ($rs->fetch()) {
-                [$ip, $time] = explode(':', (string) $rs->rule_content);
+                $rule_content = is_string($rule_content = $rs->rule_content) ? $rule_content : '';
+                [$ip, $time]  = explode(':', $rule_content);
                 if (($cip === $ip) && (time() - (int) $time <= $this->delay)) {
                     return true;
                 }
@@ -168,7 +170,8 @@ class AntispamFilterAntiflood extends SpamFilter
             ->from($this->table)
         ;
         $rs = $sql->select();
-        $id = $rs ? $rs->f(0) + 1 : 1;
+        $id = $rs instanceof MetaRecord && is_numeric($id = $rs->f(0)) ? (int) $id : 0;
+        $id++;
 
         $cur               = App::db()->con()->openCursor($this->table);
         $cur->rule_id      = $id;
@@ -200,9 +203,13 @@ class AntispamFilterAntiflood extends SpamFilter
         $rs = $sql->select();
         if ($rs) {
             while ($rs->fetch()) {
-                [$ip, $time] = explode(':', (string) $rs->rule_content);
-                if (time() - (int) $time > $this->delay) {
-                    $ids[] = $rs->rule_id;
+                $rule_id = is_numeric($rule_id = $rs->rule_id) ? (int) $rule_id : 0;
+                if ($rule_id > 0) {
+                    $rule_content = is_string($rule_content = $rs->rule_content) ? $rule_content : '';
+                    [$ip, $time]  = explode(':', $rule_content);
+                    if (time() - (int) $time > $this->delay) {
+                        $ids[] = $rule_id;
+                    }
                 }
             }
         }
@@ -215,25 +222,19 @@ class AntispamFilterAntiflood extends SpamFilter
     /**
      * Removes a rule.
      *
-     * @param      array<int, string>|string  $ids    The identifiers
+     * @param      array<int, int>  $ids    The identifiers
      */
-    private function removeRule(string|array $ids): void
+    private function removeRule(array $ids): void
     {
         $sql = new DeleteStatement();
         $sql
             ->from($this->table)
         ;
 
-        if (is_array($ids)) {
-            foreach ($ids as &$v) {
-                $v = (int) $v;
-            }
-
-            $sql->where('rule_id' . $sql->in($ids, 'int'));
-        } else {
-            $ids = (int) $ids;
-            $sql->where('rule_id = ' . $ids);
+        foreach ($ids as &$v) {
+            $v = (int) $v;
         }
+        $sql->where('rule_id' . $sql->in($ids, 'int'));
 
         if (!App::auth()->isSuperAdmin()) {
             $sql->and('blog_id = ' . $sql->quote(App::blog()->id()));
@@ -252,16 +253,16 @@ class AntispamFilterAntiflood extends SpamFilter
      */
     public function gui(string $url): string
     {
-        $settings    = My::settings();
-        $flood_delay = $settings->flood_delay;
-        $send_error  = $settings->send_error;
+        $settings   = My::settings();
+        $delay      = is_numeric($delay = $settings->flood_delay) ? (int) $delay : 0;
+        $send_error = (bool) $settings->send_error;
 
         if (isset($_POST['af_send'])) {
             try {
-                $flood_delay = (int) $_POST['flood_delay'];
-                $send_error  = isset($_POST['send_error']);
+                $delay      = isset($_POST['flood_delay']) && is_numeric($delay = $_POST['flood_delay']) ? (int) $delay : 0;
+                $send_error = !empty($_POST['send_error']);
 
-                $settings->put('flood_delay', $flood_delay, App::blogWorkspace()::NS_INT);
+                $settings->put('flood_delay', $delay, App::blogWorkspace()::NS_INT);
                 $settings->put('send_error', $send_error, App::blogWorkspace()::NS_BOOL);
 
                 App::backend()->notices()->addSuccessNotice(__('Filter configuration have been successfully saved.'));
@@ -279,7 +280,7 @@ class AntispamFilterAntiflood extends SpamFilter
         ->method('post')
         ->fields([
             (new Para())->items([
-                (new Number('flood_delay', 0, 999, (int) $flood_delay))
+                (new Number('flood_delay', 0, 999, $delay))
                     ->label((new Label(__('Delay:'), Label::INSIDE_TEXT_BEFORE))),
             ]),
             (new Para())->class('form-note')->items([
