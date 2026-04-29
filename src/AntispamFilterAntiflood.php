@@ -170,7 +170,7 @@ class AntispamFilterAntiflood extends SpamFilter
             ->from($this->table)
         ;
         $rs = $sql->select();
-        $id = $rs instanceof MetaRecord && is_numeric($id = $rs->f(0)) ? (int) $id : 0;
+        $id = $rs instanceof MetaRecord ? $rs->cardinal() : 0;
         $id++;
 
         $cur               = App::db()->con()->openCursor($this->table);
