@@ -61,6 +61,7 @@ class AntispamFilterAntiflood extends SpamFilter
         if (!$settings->settingExists('flood_delay')) {
             $settings->put('flood_delay', 60, App::blogWorkspace()::NS_INT, 'Delay in seconds beetween two comments from the same IP');
         }
+
         $this->delay = $delay;
 
         if (!$settings->settingExists('send_error')) {
@@ -234,6 +235,7 @@ class AntispamFilterAntiflood extends SpamFilter
         foreach ($ids as &$v) {
             $v = (int) $v;
         }
+
         $sql->where('rule_id' . $sql->in($ids, 'int'));
 
         if (!App::auth()->isSuperAdmin()) {
