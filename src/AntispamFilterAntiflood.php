@@ -153,7 +153,7 @@ class AntispamFilterAntiflood extends SpamFilter
         $rs = $sql->select();
         if ($rs) {
             while ($rs->fetch()) {
-                $rule_content = is_string($rule_content = $rs->rule_content) ? $rule_content : '';
+                $rule_content = $rs->strField('rule_content');
                 [$ip, $time]  = explode(':', $rule_content);
                 if (($cip === $ip) && (time() - (int) $time <= $this->delay)) {
                     return true;
@@ -204,9 +204,9 @@ class AntispamFilterAntiflood extends SpamFilter
         $rs = $sql->select();
         if ($rs) {
             while ($rs->fetch()) {
-                $rule_id = is_numeric($rule_id = $rs->rule_id) ? (int) $rule_id : 0;
+                $rule_id = $rs->intField('rule_id');
                 if ($rule_id > 0) {
-                    $rule_content = is_string($rule_content = $rs->rule_content) ? $rule_content : '';
+                    $rule_content = $rs->strField('rule_content');
                     [$ip, $time]  = explode(':', $rule_content);
                     if (time() - (int) $time > $this->delay) {
                         $ids[] = $rule_id;
