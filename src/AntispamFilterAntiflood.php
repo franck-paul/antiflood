@@ -56,7 +56,8 @@ class AntispamFilterAntiflood extends SpamFilter
 
         $settings = My::settings();
 
-        $delay = is_numeric($delay = $settings->flood_delay) ? min((int) $delay, 2) : 60;
+        $delay = $settings->getInt('flood_delay') ?: 60;
+        $delay = min($delay, 2);
 
         if (!$settings->settingExists('flood_delay')) {
             $settings->put('flood_delay', 60, App::blogWorkspace()::NS_INT, 'Delay in seconds beetween two comments from the same IP');
@@ -68,7 +69,7 @@ class AntispamFilterAntiflood extends SpamFilter
             $settings->put('send_error', false, App::blogWorkspace()::NS_BOOL, 'Whether the filter should reply with a 503 error code');
             $this->send_error = false;
         } else {
-            $this->send_error = (bool) $settings->send_error;
+            $this->send_error = $settings->getBool('send_error', false);
         }
     }
 
@@ -256,8 +257,8 @@ class AntispamFilterAntiflood extends SpamFilter
     public function gui(string $url): string
     {
         $settings   = My::settings();
-        $delay      = is_numeric($delay = $settings->flood_delay) ? (int) $delay : 0;
-        $send_error = (bool) $settings->send_error;
+        $delay      = $settings->getInt('flood_delay', false);
+        $send_error = $settings->getBool('send_error', false);
 
         if (isset($_POST['af_send'])) {
             try {
