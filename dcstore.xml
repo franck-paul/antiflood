@@ -1,12 +1,12 @@
 <modules xmlns:da="http://dotaddict.org/da/">
   <module id="antiflood">
     <name>antiflood</name>
-    <version>6.0</version>
+    <version>7.0</version>
     <author>dcTeam</author>
     <desc>Anti flood spam filter</desc>
-    <date>2026-04-29T14:22:40+0200</date>
-    <file>https://github.com/franck-paul/antiflood/releases/download/6.0/plugin-antiflood-6.0.zip</file>
-    <da:dcmin>2.38</da:dcmin>
+    <date>2026-08-03T09:44:34+0200</date>
+    <file>https://github.com/franck-paul/antiflood/releases/download/7.0/plugin-antiflood-7.0.zip</file>
+    <da:dcmin>2.39</da:dcmin>
     <da:details>https://dotclear.org/plugin/detail/antiflood</da:details>
     <da:support>https://github.com/franck-paul/antiflood</da:support>
   </module>
