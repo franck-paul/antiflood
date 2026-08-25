@@ -175,11 +175,11 @@ class AntispamFilterAntiflood extends SpamFilter
         $id = $rs instanceof MetaRecord ? $rs->cardinal() : 0;
         $id++;
 
-        $cur               = App::db()->con()->openCursor($this->table);
-        $cur->rule_id      = $id;
-        $cur->rule_type    = 'flood';
-        $cur->rule_content = implode(':', [$cip,time()]);
-        $cur->blog_id      = App::blog()->id();
+        $cur = App::db()->con()->openCursor($this->table);
+        $cur->setIntField('rule_id', $id);
+        $cur->setStrField('rule_type', 'flood');
+        $cur->setStrField('rule_content', implode(':', [$cip,time()]));
+        $cur->setStrField('blog_id', App::blog()->id());
 
         $cur->insert();
 
