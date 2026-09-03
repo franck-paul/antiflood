@@ -190,19 +190,19 @@ class AntispamFilterAntiflood extends SpamFilter
     {
         $ids = [];
 
-        $sql = new SelectStatement();
-        $sql
+        $selectStatement = new SelectStatement();
+        $selectStatement
             ->fields(['rule_id', 'rule_content'])
             ->from($this->table)
-            ->where('rule_type = ' . $sql->quote('flood'))
-            ->and($sql->orGroup([
-                'blog_id = ' . $sql->quote(App::blog()->id()),
-                $sql->isNull('blog_id'),
+            ->where('rule_type = ' . $selectStatement->quote('flood'))
+            ->and($selectStatement->orGroup([
+                'blog_id = ' . $selectStatement->quote(App::blog()->id()),
+                $selectStatement->isNull('blog_id'),
             ]))
             ->order('rule_content ASC')
         ;
 
-        $rs = $sql->select();
+        $rs = $selectStatement->select();
         if ($rs) {
             while ($rs->fetch()) {
                 $rule_id = $rs->intField('rule_id');
@@ -228,22 +228,22 @@ class AntispamFilterAntiflood extends SpamFilter
      */
     private function removeRule(array $ids): void
     {
-        $sql = new DeleteStatement();
-        $sql
+        $deleteStatement = new DeleteStatement();
+        $deleteStatement
             ->from($this->table)
         ;
 
-        foreach ($ids as &$v) {
-            $v = (int) $v;
+        foreach ($ids as &$id) {
+            $id = (int) $id;
         }
 
-        $sql->where('rule_id' . $sql->in($ids, 'int'));
+        $deleteStatement->where('rule_id' . $deleteStatement->in($ids, 'int'));
 
         if (!App::auth()->isSuperAdmin()) {
-            $sql->and('blog_id = ' . $sql->quote(App::blog()->id()));
+            $deleteStatement->and('blog_id = ' . $deleteStatement->quote(App::blog()->id()));
         }
 
-        $sql->delete();
+        $deleteStatement->delete();
     }
 
     /**
