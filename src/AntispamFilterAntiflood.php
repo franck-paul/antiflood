@@ -22,10 +22,10 @@ use Dotclear\Database\Statement\SelectStatement;
 use Dotclear\Helper\Html\Form\Checkbox;
 use Dotclear\Helper\Html\Form\Form;
 use Dotclear\Helper\Html\Form\Label;
+use Dotclear\Helper\Html\Form\Note;
 use Dotclear\Helper\Html\Form\Number;
 use Dotclear\Helper\Html\Form\Para;
 use Dotclear\Helper\Html\Form\Submit;
-use Dotclear\Helper\Html\Form\Text;
 use Dotclear\Helper\Network\Http;
 use Dotclear\Plugin\antispam\Antispam;
 use Dotclear\Plugin\antispam\SpamFilter;
@@ -286,17 +286,17 @@ class AntispamFilterAntiflood extends SpamFilter
                 (new Number('flood_delay', 0, 999, $delay))
                     ->label((new Label(__('Delay:'), Label::INSIDE_TEXT_BEFORE))),
             ]),
-            (new Para())->class('form-note')->items([
-                (new Text(null, __('Sets the delay in seconds beetween two comments from the same IP'))),
-            ]),
+            (new Note())
+                ->class('form-note')
+                ->text(__('Sets the delay in seconds beetween two comments from the same IP')),
             (new Para())->items([
                 (new Checkbox('send_error', $send_error))
                     ->value(1)
                     ->label((new Label(__('Send error code'), Label::INSIDE_TEXT_AFTER))),
             ]),
-            (new Para())->class('form-note')->items([
-                (new Text(null, __('Sets whether the filter should reply with a 503 error code.'))),
-            ]),
+            (new Note())
+                ->class('form-note')
+                ->text(__('Sets whether the filter should reply with a 503 error code.')),
             (new Para())->items([
                 (new Submit(['af_send'], __('Save')))
                     ->accesskey('s'),
