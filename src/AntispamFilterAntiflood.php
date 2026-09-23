@@ -208,7 +208,7 @@ class AntispamFilterAntiflood extends SpamFilter
                 $rule_id = $rs->intField('rule_id');
                 if ($rule_id > 0) {
                     $rule_content = $rs->strField('rule_content');
-                    [$ip, $time]  = explode(':', (string) $rule_content);
+                    [$_ip, $time] = explode(':', (string) $rule_content);
                     if (time() - (int) $time > $this->delay) {
                         $ids[] = $rule_id;
                     }
