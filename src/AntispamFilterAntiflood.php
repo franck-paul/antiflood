@@ -152,7 +152,7 @@ class AntispamFilterAntiflood extends SpamFilter
         ;
 
         $rs = $sql->select();
-        if ($rs) {
+        if ($rs instanceof MetaRecord) {
             while ($rs->fetch()) {
                 $rule_content = $rs->strField('rule_content');
                 [$ip, $time]  = explode(':', $rule_content);
@@ -203,7 +203,7 @@ class AntispamFilterAntiflood extends SpamFilter
         ;
 
         $rs = $selectStatement->select();
-        if ($rs) {
+        if ($rs instanceof MetaRecord) {
             while ($rs->fetch()) {
                 $rule_id = $rs->intField('rule_id');
                 if ($rule_id > 0) {
